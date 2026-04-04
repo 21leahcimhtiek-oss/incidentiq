@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { MTTRChart } from '@/components/MTTRChart'
 import { OnCallWidget } from '@/components/OnCallWidget'
+import Link from 'next/link'
 
 export default async function DashboardPage() {
   const supabase = createClient()
@@ -67,7 +68,8 @@ export default async function DashboardPage() {
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Active Incidents</h2>
           <div className="space-y-3">
             {openIncidents.data.map(incident => (
-              <a key={incident.id} href={`/incidents/${incident.id}`} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors">
+              <Link key={incident.id} href={`/incidents/${incident.id}`}
+                className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors">
                 <div className="flex items-center gap-3">
                   <span className={`px-2 py-0.5 rounded text-xs font-bold ${
                     incident.severity === 'P0' ? 'bg-red-100 text-red-700' :
@@ -78,7 +80,7 @@ export default async function DashboardPage() {
                   <span className="text-gray-900 font-medium">{incident.title}</span>
                 </div>
                 <span className="text-xs text-gray-500">{new Date(incident.created_at).toLocaleDateString()}</span>
-              </a>
+              </Link>
             ))}
           </div>
         </div>
