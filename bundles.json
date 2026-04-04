@@ -1,6 +1,22 @@
 {
   "bundles": [
-    {"id": "aurora-core", "name": "Aurora Core Bundle", "includes": ["incidentiq"], "discount_percent": 20},
-    {"id": "aurora-enterprise", "name": "Aurora Enterprise Suite", "includes": ["incidentiq"], "discount_percent": 30}
+    {
+      "id": "incidentiq-starter-bundle",
+      "name": "IncidentIQ Starter Bundle",
+      "products": ["incidentiq"],
+      "plan": "starter",
+      "price": 4900,
+      "currency": "usd",
+      "billing": "monthly"
+    },
+    {
+      "id": "incidentiq-pro-bundle",
+      "name": "IncidentIQ Pro Bundle",
+      "products": ["incidentiq"],
+      "plan": "pro",
+      "price": 14900,
+      "currency": "usd",
+      "billing": "monthly"
+    }
   ]
 }
