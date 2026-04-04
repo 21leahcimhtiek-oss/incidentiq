@@ -6,6 +6,7 @@ export default async function PostmortemDetailPage({ params }: { params: { id: s
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
+
   const { data: profile } = await supabase.from('users').select('org_id, role').eq('id', user.id).single()
   const { data: postmortem, error } = await supabase
     .from('postmortems')
@@ -13,6 +14,7 @@ export default async function PostmortemDetailPage({ params }: { params: { id: s
     .eq('id', params.id)
     .eq('org_id', profile?.org_id)
     .single()
+
   if (error || !postmortem) notFound()
 
   return (
