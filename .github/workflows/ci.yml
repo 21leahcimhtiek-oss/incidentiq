@@ -1,0 +1,134 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run lint
+
+  typecheck:
+    name: TypeScript Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run typecheck
+
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key
+      SUPABASE_SERVICE_ROLE_KEY: placeholder-service-role
+      STRIPE_SECRET_KEY: sk_test_placeholder
+      STRIPE_WEBHOOK_SECRET: whsec_placeholder
+      STRIPE_STARTER_PRICE_ID: price_placeholder_starter
+      STRIPE_PRO_PRICE_ID: price_placeholder_pro
+      OPENAI_API_KEY: sk-placeholder
+      UPSTASH_REDIS_REST_URL: https://placeholder.upstash.io
+      UPSTASH_REDIS_REST_TOKEN: placeholder-token
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      - run: npm test -- --coverage --passWithNoTests
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [lint, typecheck, test]
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key
+      SUPABASE_SERVICE_ROLE_KEY: placeholder-service-role
+      STRIPE_SECRET_KEY: sk_test_placeholder
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_placeholder
+      STRIPE_WEBHOOK_SECRET: whsec_placeholder
+      STRIPE_STARTER_PRICE_ID: price_placeholder_starter
+      STRIPE_PRO_PRICE_ID: price_placeholder_pro
+      OPENAI_API_KEY: sk-placeholder
+      UPSTASH_REDIS_REST_URL: https://placeholder.upstash.io
+      UPSTASH_REDIS_REST_TOKEN: placeholder-token
+      NEXT_PUBLIC_APP_URL: https://incidentiq.vercel.app
+      NEXT_PUBLIC_SENTRY_DSN: https://placeholder@o0.ingest.sentry.io/0
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nextjs-build
+          path: .next/
+          retention-days: 1
+
+  e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: [build]
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Download build
+        uses: actions/download-artifact@v4
+        with:
+          name: nextjs-build
+          path: .next/
+      - name: Run E2E tests
+        run: npm run test:e2e -- --project=chromium
+        env:
+          STRIPE_SECRET_KEY: sk_test_placeholder
+          STRIPE_WEBHOOK_SECRET: whsec_placeholder
+          STRIPE_STARTER_PRICE_ID: price_placeholder
+          STRIPE_PRO_PRICE_ID: price_placeholder
+          OPENAI_API_KEY: sk-placeholder
+          UPSTASH_REDIS_REST_URL: https://placeholder.upstash.io
+          UPSTASH_REDIS_REST_TOKEN: placeholder
+          SUPABASE_SERVICE_ROLE_KEY: placeholder
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
