@@ -52,21 +52,20 @@ export default async function IncidentDetailPage({ params }: PageProps) {
             </span>
           </div>
           <div className="flex gap-2">
-            {profile?.role !== 'viewer' && !postmortem && (
-              <button
-                onClick={async () => {
-                  await fetch(`/api/incidents/${params.id}/postmortem`, { method: 'POST' })
-                  window.location.href = `/postmortems?incident=${params.id}`
-                }}
-                className="border border-gray-200 text-gray-700 px-3 py-1.5 rounded-lg text-sm hover:bg-gray-50 transition-colors"
-              >
-                Generate Post-Mortem
-              </button>
-            )}
-            {postmortem && (
-              <Link href={`/postmortems/${postmortem.id}`} className="border border-blue-200 text-blue-700 px-3 py-1.5 rounded-lg text-sm hover:bg-blue-50 transition-colors">
+            {postmortem ? (
+              <Link href={`/postmortems/${postmortem.id}`}
+                className="border border-blue-200 text-blue-700 px-3 py-1.5 rounded-lg text-sm hover:bg-blue-50 transition-colors">
                 View Post-Mortem
               </Link>
+            ) : (
+              profile?.role !== 'viewer' && (
+                <form action={`/api/incidents/${params.id}/postmortem`} method="POST">
+                  <button type="submit"
+                    className="border border-gray-200 text-gray-700 px-3 py-1.5 rounded-lg text-sm hover:bg-gray-50 transition-colors">
+                    Generate Post-Mortem
+                  </button>
+                </form>
+              )
             )}
           </div>
         </div>
@@ -91,7 +90,9 @@ export default async function IncidentDetailPage({ params }: PageProps) {
           </div>
           <div>
             <p className="text-xs text-gray-500">Resolved At</p>
-            <p className="text-sm font-medium text-gray-900">{incident.resolved_at ? new Date(incident.resolved_at).toLocaleString() : 'Ongoing'}</p>
+            <p className="text-sm font-medium text-gray-900">
+              {incident.resolved_at ? new Date(incident.resolved_at).toLocaleString() : 'Ongoing'}
+            </p>
           </div>
         </div>
       </div>
