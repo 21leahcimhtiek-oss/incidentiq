@@ -5,6 +5,7 @@ export default async function PostmortemsPage() {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
+
   const { data: profile } = await supabase.from('users').select('org_id').eq('id', user.id).single()
   const { data: postmortems } = await supabase
     .from('postmortems')
