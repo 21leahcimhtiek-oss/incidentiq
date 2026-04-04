@@ -126,33 +126,26 @@ $$ LANGUAGE SQL SECURITY DEFINER STABLE;
 -- RLS POLICIES: ORGS
 CREATE POLICY "Users can view their own org" ON orgs
   FOR SELECT USING (id = get_user_org_id());
-
 CREATE POLICY "Admins can update their org" ON orgs
   FOR UPDATE USING (id = get_user_org_id() AND get_user_role() = 'admin');
 
 -- RLS POLICIES: USERS
 CREATE POLICY "Users can view members of their org" ON users
   FOR SELECT USING (org_id = get_user_org_id());
-
 CREATE POLICY "Admins can insert users into their org" ON users
   FOR INSERT WITH CHECK (org_id = get_user_org_id() AND get_user_role() = 'admin');
-
 CREATE POLICY "Admins can update users in their org" ON users
   FOR UPDATE USING (org_id = get_user_org_id() AND get_user_role() = 'admin');
-
 CREATE POLICY "Admins can delete users from their org" ON users
   FOR DELETE USING (org_id = get_user_org_id() AND get_user_role() = 'admin');
 
 -- RLS POLICIES: INCIDENTS
 CREATE POLICY "Org members can view incidents" ON incidents
   FOR SELECT USING (org_id = get_user_org_id());
-
 CREATE POLICY "Admins and responders can create incidents" ON incidents
   FOR INSERT WITH CHECK (org_id = get_user_org_id() AND get_user_role() IN ('admin', 'responder'));
-
 CREATE POLICY "Admins and responders can update incidents" ON incidents
   FOR UPDATE USING (org_id = get_user_org_id() AND get_user_role() IN ('admin', 'responder'));
-
 CREATE POLICY "Admins can delete incidents" ON incidents
   FOR DELETE USING (org_id = get_user_org_id() AND get_user_role() = 'admin');
 
@@ -161,7 +154,6 @@ CREATE POLICY "Org members can view incident updates" ON incident_updates
   FOR SELECT USING (
     EXISTS (SELECT 1 FROM incidents i WHERE i.id = incident_id AND i.org_id = get_user_org_id())
   );
-
 CREATE POLICY "Admins and responders can create incident updates" ON incident_updates
   FOR INSERT WITH CHECK (
     get_user_role() IN ('admin', 'responder') AND
@@ -171,27 +163,23 @@ CREATE POLICY "Admins and responders can create incident updates" ON incident_up
 -- RLS POLICIES: ONCALL SCHEDULES
 CREATE POLICY "Org members can view oncall schedules" ON oncall_schedules
   FOR SELECT USING (org_id = get_user_org_id());
-
 CREATE POLICY "Admins can manage oncall schedules" ON oncall_schedules
   FOR ALL USING (org_id = get_user_org_id() AND get_user_role() = 'admin');
 
 -- RLS POLICIES: POSTMORTEMS
 CREATE POLICY "Org members can view postmortems" ON postmortems
   FOR SELECT USING (org_id = get_user_org_id());
-
 CREATE POLICY "Admins and responders can manage postmortems" ON postmortems
   FOR ALL USING (org_id = get_user_org_id() AND get_user_role() IN ('admin', 'responder'));
 
 -- RLS POLICIES: ALERTS
 CREATE POLICY "Org members can view alerts" ON alerts
   FOR SELECT USING (org_id = get_user_org_id());
-
 CREATE POLICY "Admins can manage alerts" ON alerts
   FOR ALL USING (org_id = get_user_org_id() AND get_user_role() = 'admin');
 
 -- RLS POLICIES: INTEGRATIONS
 CREATE POLICY "Org members can view integrations" ON integrations
   FOR SELECT USING (org_id = get_user_org_id());
-
 CREATE POLICY "Admins can manage integrations" ON integrations
   FOR ALL USING (org_id = get_user_org_id() AND get_user_role() = 'admin');
