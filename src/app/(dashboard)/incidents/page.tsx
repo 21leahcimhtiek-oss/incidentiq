@@ -37,7 +37,8 @@ export default async function IncidentsPage({
           <p className="text-gray-600">{count ?? 0} total incidents</p>
         </div>
         {profile?.role !== 'viewer' && (
-          <Link href="/incidents/new" className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+          <Link href="/incidents/new"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">
             + New Incident
           </Link>
         )}
