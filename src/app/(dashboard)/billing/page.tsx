@@ -9,8 +9,13 @@ export default async function BillingPage({
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
+
   const { data: profile } = await supabase.from('users').select('org_id, role').eq('id', user.id).single()
-  const { data: org } = await supabase.from('orgs').select('plan, stripe_subscription_id').eq('id', profile?.org_id).single()
+  const { data: org } = await supabase
+    .from('orgs')
+    .select('plan, stripe_subscription_id')
+    .eq('id', profile?.org_id)
+    .single()
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -38,7 +43,10 @@ export default async function BillingPage({
           </div>
           {org?.stripe_subscription_id && profile?.role === 'admin' && (
             <form action="/api/billing/portal" method="POST">
-              <button type="submit" className="border border-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+              <button
+                type="submit"
+                className="border border-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+              >
                 Manage Subscription
               </button>
             </form>
