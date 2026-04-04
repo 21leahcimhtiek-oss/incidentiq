@@ -49,7 +49,9 @@ export default function SettingsPage() {
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Invite Team Member</h2>
           <form onSubmit={handleInvite} className="space-y-4">
             {inviteStatus && (
-              <div className={`px-4 py-3 rounded-lg text-sm ${inviteStatus.includes('sent') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+              <div className={`px-4 py-3 rounded-lg text-sm ${
+                inviteStatus.includes('sent') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+              }`}>
                 {inviteStatus}
               </div>
             )}
@@ -71,8 +73,11 @@ export default function SettingsPage() {
                 <option value="responder">Responder</option>
                 <option value="admin">Admin</option>
               </select>
-              <button type="submit" disabled={inviting}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors whitespace-nowrap">
+              <button
+                type="submit"
+                disabled={inviting}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors whitespace-nowrap"
+              >
                 {inviting ? 'Sending...' : 'Send Invite'}
               </button>
             </div>
