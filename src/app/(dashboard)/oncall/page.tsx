@@ -5,6 +5,7 @@ export default async function OnCallPage() {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
+
   const { data: profile } = await supabase.from('users').select('org_id, role').eq('id', user.id).single()
   const now = new Date().toISOString()
   const { data: schedules } = await supabase
