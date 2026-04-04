@@ -1,0 +1,16 @@
+{
+  "id": "incidentiq",
+  "name": "IncidentIQ",
+  "tagline": "AI incident management. Zero manual post-mortems.",
+  "description": "IncidentIQ detects, routes, tracks, and documents incidents automatically. AI classifies severity, routes on-call responders, and generates post-mortems from incident timelines.",
+  "category": "DevOps / SRE",
+  "tags": ["incident-management", "post-mortem", "sre", "ai", "devops", "automation"],
+  "url": "https://auroramarket.org/incidentiq",
+  "demo": "https://incidentiq.vercel.app",
+  "repo": "https://github.com/21leahcimhtiek-oss/incidentiq",
+  "stack": ["Next.js", "Supabase", "Stripe", "OpenAI", "Vercel"],
+  "status": "production",
+  "version": "1.0.0",
+  "author": "Aurora Rayes LLC",
+  "license": "MIT"
+}
