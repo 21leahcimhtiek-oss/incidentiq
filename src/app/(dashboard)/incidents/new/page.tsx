@@ -83,7 +83,9 @@ export default function NewIncidentPage() {
                   type="button"
                   onClick={() => setSeverity(severity === opt.value ? '' : opt.value)}
                   className={`border-2 rounded-lg p-3 text-center transition-all ${
-                    severity === opt.value ? opt.color + ' border-2' : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
+                    severity === opt.value
+                      ? opt.color + ' border-2'
+                      : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
                   }`}
                 >
                   <div className="font-bold">{opt.label}</div>
