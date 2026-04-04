@@ -51,15 +51,29 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     const body = await request.json()
     const isManualUpdate = UpdatePostmortemSchema.safeParse(body)
-    
+
     if (isManualUpdate.success) {
-      const { data: existing } = await supabase.from('postmortems').select('id').eq('incident_id', params.id).maybeSingle()
+      const { data: existing } = await supabase
+        .from('postmortems')
+        .select('id')
+        .eq('incident_id', params.id)
+        .maybeSingle()
+
       let postmortem
       if (existing) {
-        const { data } = await supabase.from('postmortems').update(isManualUpdate.data).eq('incident_id', params.id).select().single()
+        const { data } = await supabase
+          .from('postmortems')
+          .update(isManualUpdate.data)
+          .eq('incident_id', params.id)
+          .select()
+          .single()
         postmortem = data
       } else {
-        const { data } = await supabase.from('postmortems').insert({ incident_id: params.id, org_id: profile.org_id, ...isManualUpdate.data }).select().single()
+        const { data } = await supabase
+          .from('postmortems')
+          .insert({ incident_id: params.id, org_id: profile.org_id, ...isManualUpdate.data })
+          .select()
+          .single()
         postmortem = data
       }
       return NextResponse.json({ postmortem })
@@ -71,7 +85,9 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       .eq('id', params.id)
       .single()
 
-    if (incidentError || !incident) return NextResponse.json({ error: 'Incident not found' }, { status: 404 })
+    if (incidentError || !incident) {
+      return NextResponse.json({ error: 'Incident not found' }, { status: 404 })
+    }
 
     const content = await generatePostmortem({
       title: incident.title,
@@ -80,20 +96,41 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       status: incident.status,
       createdAt: incident.created_at,
       resolvedAt: incident.resolved_at,
-      updates: (incident.incident_updates || []).map((u: { message: string; created_at: string; users?: { email: string } | null }) => ({
-        message: u.message,
-        createdAt: u.created_at,
-        userEmail: u.users?.email,
-      })),
+      updates: (incident.incident_updates || []).map(
+        (u: { message: string; created_at: string; users?: { email: string } | null }) => ({
+          message: u.message,
+          createdAt: u.created_at,
+          userEmail: u.users?.email,
+        })
+      ),
     })
 
-    const { data: existing } = await supabase.from('postmortems').select('id').eq('incident_id', params.id).maybeSingle()
+    const { data: existing } = await supabase
+      .from('postmortems')
+      .select('id')
+      .eq('incident_id', params.id)
+      .maybeSingle()
+
     let postmortem
     if (existing) {
-      const { data } = await supabase.from('postmortems').update({ content_md: content, ai_generated: true }).eq('incident_id', params.id).select().single()
+      const { data } = await supabase
+        .from('postmortems')
+        .update({ content_md: content, ai_generated: true })
+        .eq('incident_id', params.id)
+        .select()
+        .single()
       postmortem = data
     } else {
-      const { data } = await supabase.from('postmortems').insert({ incident_id: params.id, org_id: profile.org_id, content_md: content, ai_generated: true }).select().single()
+      const { data } = await supabase
+        .from('postmortems')
+        .insert({
+          incident_id: params.id,
+          org_id: profile.org_id,
+          content_md: content,
+          ai_generated: true,
+        })
+        .select()
+        .single()
       postmortem = data
     }
 
