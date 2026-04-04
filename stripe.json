@@ -1,10 +1,72 @@
 {
-  "product_name": "Incidentiq",
-  "description": "Incidentiq — Aurora Rayes LLC",
-  "plans": [
-    {"id": "starter", "name": "Starter", "amount": 4900, "interval": "month", "trial_days": 14},
-    {"id": "pro", "name": "Pro", "amount": 14900, "interval": "month", "trial_days": 14},
-    {"id": "enterprise", "name": "Enterprise", "amount": 0, "interval": "month", "custom": true}
-  ],
-  "webhook_events": ["checkout.session.completed", "customer.subscription.updated", "customer.subscription.deleted", "invoice.payment_failed"]
+  "products": [
+    {
+      "id": "starter",
+      "name": "Starter",
+      "description": "For small teams getting started with incident management",
+      "price_monthly": 4900,
+      "price_yearly": 47040,
+      "currency": "usd",
+      "features": [
+        "5 users",
+        "100 incidents/month",
+        "AI severity classification",
+        "Basic post-mortems",
+        "Email notifications",
+        "7-day data retention"
+      ],
+      "limits": {
+        "users": 5,
+        "incidents_per_month": 100,
+        "integrations": 2
+      }
+    },
+    {
+      "id": "pro",
+      "name": "Pro",
+      "description": "For growing engineering teams that need advanced incident management",
+      "price_monthly": 14900,
+      "price_yearly": 143040,
+      "currency": "usd",
+      "features": [
+        "Unlimited users",
+        "Unlimited incidents",
+        "AI post-mortem generation",
+        "Advanced analytics",
+        "Slack & PagerDuty integrations",
+        "On-call scheduling",
+        "90-day data retention",
+        "Priority support"
+      ],
+      "limits": {
+        "users": -1,
+        "incidents_per_month": -1,
+        "integrations": -1
+      }
+    },
+    {
+      "id": "enterprise",
+      "name": "Enterprise",
+      "description": "For large organizations with custom requirements",
+      "price_monthly": null,
+      "price_yearly": null,
+      "currency": "usd",
+      "features": [
+        "Everything in Pro",
+        "SSO/SAML",
+        "Custom integrations",
+        "SLA guarantees",
+        "Dedicated support",
+        "Custom data retention",
+        "Audit logs",
+        "Custom AI models"
+      ],
+      "limits": {
+        "users": -1,
+        "incidents_per_month": -1,
+        "integrations": -1
+      },
+      "contact": true
+    }
+  ]
 }
